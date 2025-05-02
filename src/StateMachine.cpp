@@ -11,8 +11,11 @@ StateMachine::StateMachine(int* pins, int numPins, unsigned long intervalMs, uin
     FastLED.setBrightness(BRIGHTNESS);  // LEDの明るさを設定
 }
 
-StateMachine::~StateMachine() {
-  delete[] leds;
+// デストラクタ：メモリの解放
+StateMachine::~StateMachine()  // デストラクタの定義
+{
+    delete[] leds1;
+    delete[] leds2;
 }
 
 // メインの状態更新関数：各状態に応じたLED制御を実行
