@@ -1,29 +1,34 @@
-#include <Arduino.h>     // Arduinoの基本ライブラリをインクルード
-#include "StateMachine.h"  // ステートマシンのヘッダーファイルをインクルード
+#include "StateMachine.h" // ステートマシン制御用ヘッダ
+#include <Arduino.h>      // Arduino基本ライブラリ
 
-// グローバル変数
-int ledPins1[] = {LED_PIN1};  // LED1のピン配列
-int ledPins2[] = {LED_PIN2};  // LED2のピン配列
-StateMachine rgb1(ledPins1, 1, 1000, 2, 2);  // LED1用のステートマシン（1秒間隔、2回繰り返し、明るさ2）
-StateMachine rgb2(ledPins2, 1, 1500, 3, 3);  // LED2用のステートマシン（1.5秒間隔、3回繰り返し、明るさ3）
+// --- グローバル変数定義 ---
+int ledPins1[] = {LED_PIN1}; // LED1のピン番号
+int ledPins2[] = {LED_PIN2}; // LED2のピン番号
 
-u32_t preMillis = 0;  // 前回のミリ秒を格納する変数
+// LED1用ステートマシン（1秒間隔、2回繰り返し、明るさ2）
+StateMachine rgb1(ledPins1, 1, 1000, 2, 2);
+// LED2用ステートマシン（1.5秒間隔、3回繰り返し、明るさ3）
+StateMachine rgb2(ledPins2, 1, 1500, 3, 3);
 
-// メイン関数
-void setup() {          // 初期化関数
-  pinMode(LED_POWER, OUTPUT);  // LED_POWERピンを出力モードに設定
-  digitalWrite(LED_POWER, HIGH);  // LEDの電源をON
-  pinMode(4, OUTPUT);  // LED_POWERピンを出力モードに設定  
-  digitalWrite(4, HIGH);  // LEDの電源をON
+u32_t preMillis = 0; // 前回のミリ秒記録用
+
+// --- 初期化処理 ---
+void setup() {
+    pinMode(LED_POWER, OUTPUT);    // LED電源ピンを出力に設定
+    digitalWrite(LED_POWER, HIGH); // LED電源ON
+    pinMode(4, OUTPUT);            // GPIO4を出力に設定
+    digitalWrite(4, HIGH);         // GPIO4をHIGHに
 }
 
-void loop() {           // メインループ関数
-  delay(1);            // 少し待つ
-  rgb1.update();        // LED1のステートマシンを更新
-  rgb2.update();        // LED2のステートマシンを更新
-  if (millis() - preMillis > 1000)  // 1秒ごとに実行
-  {
-   digitalWrite(4, !digitalRead(4));  // LED_POWERピンの状態を反転
-   preMillis = millis();  // 前回のミリ秒を更新 
-  }
+// --- メインループ ---
+void loop() {
+    delay(1);            // 負荷軽減のための短い待機
+    rgb1.update();       // LED1の状態更新
+    rgb2.update();       // LED2の状態更新
+
+    // 1秒ごとにGPIO4の状態を反転
+    if (millis() - preMillis > 1000) {
+        digitalWrite(4, !digitalRead(4));
+        preMillis = millis();
+    }
 }
