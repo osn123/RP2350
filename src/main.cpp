@@ -18,6 +18,7 @@ void setup() {          // 初期化関数
 }
 
 void loop() {           // メインループ関数
+  delay(1);            // 少し待つ
   rgb1.update();        // LED1のステートマシンを更新
   rgb2.update();        // LED2のステートマシンを更新
   if (millis() - preMillis > 1000)  // 1秒ごとに実行
